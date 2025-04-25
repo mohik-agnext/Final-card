@@ -72,16 +72,14 @@ export default function AnniversaryCard() {
           value={data.name}
           onChange={(e) => setData({ ...data, name: e.target.value })}
           placeholder="Enter your name"
-          className={`placeholder-gray-400 text-white ${overrideClass}`}
-          style={inputStyle}
+          className="bg-white text-black placeholder-gray-400 custom-input"
         />
         <Input
           label="Designation"
           value={data.designation}
           onChange={(e) => setData({ ...data, designation: e.target.value })}
           placeholder="Enter your designation"
-          className={`placeholder-gray-400 text-white ${overrideClass}`}
-          style={inputStyle}
+          className="bg-white text-black placeholder-gray-400 custom-input"
         />
         <Input
           type="number"
@@ -92,8 +90,7 @@ export default function AnniversaryCard() {
             setData({ ...data, yearsOfService: parseInt(e.target.value) || 1 })
           }
           placeholder="Enter years of service"
-          className={`placeholder-gray-400 text-white ${overrideClass}`}
-          style={{...inputStyle, color: '#ffffff'}}
+          className="bg-white text-black placeholder-gray-400 custom-input"
         />
         <button
           onClick={handleDownload}

@@ -100,7 +100,7 @@ export default function OnboardingCard() {
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               placeholder="Enter your name"
-              className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 shadow-sm backdrop-blur-sm transition-colors"
+              className="w-full rounded-lg border border-white/20 bg-white text-black placeholder-gray-400 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors custom-input"
             />
           </div>
           <div className="col-span-1">
@@ -109,7 +109,7 @@ export default function OnboardingCard() {
               value={data.designation}
               onChange={(e) => setData({ ...data, designation: e.target.value })}
               placeholder="Enter your job title"
-              className="placeholder-gray-400 text-white"
+              className="placeholder-gray-400 text-black bg-white custom-input"
             />
           </div>
         </div>
@@ -122,7 +122,7 @@ export default function OnboardingCard() {
               onChange={(e) => setData({ ...data, email: e.target.value })}
               placeholder="Enter your email address"
               type="email"
-              className="placeholder-gray-400 text-white"
+              className="placeholder-gray-400 text-black bg-white custom-input"
             />
           </div>
           <div className="col-span-1">
@@ -131,7 +131,7 @@ export default function OnboardingCard() {
               value={data.phone}
               onChange={(e) => setData({ ...data, phone: e.target.value })}
               placeholder="Enter your phone number"
-              className="placeholder-gray-400 text-white"
+              className="placeholder-gray-400 text-black bg-white custom-input"
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function OnboardingCard() {
               value={data.education}
               onChange={(e) => setData({ ...data, education: e.target.value })}
               placeholder="Enter your education qualification"
-              className="placeholder-gray-400 text-white"
+              className="placeholder-gray-400 text-black bg-white custom-input"
             />
           </div>
           <div className="col-span-1">
@@ -152,7 +152,7 @@ export default function OnboardingCard() {
               value={data.location}
               onChange={(e) => setData({ ...data, location: e.target.value })}
               placeholder="Enter your work location"
-              className="placeholder-gray-400 text-white"
+              className="placeholder-gray-400 text-black bg-white custom-input"
             />
           </div>
         </div>
@@ -165,7 +165,7 @@ export default function OnboardingCard() {
             value={data.welcomeMessage}
             onChange={(e) => setData({ ...data, welcomeMessage: e.target.value })}
             placeholder="Write a short welcome message or professional summary"
-            className="w-full rounded-md border-gray-700 bg-white text-white placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+            className="w-full rounded-md border border-white/20 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px] custom-textarea"
           />
         </div>
 
@@ -191,7 +191,7 @@ export default function OnboardingCard() {
             value={data.reportingManager}
             onChange={(e) => setData({ ...data, reportingManager: e.target.value })}
             placeholder="Enter your manager's name"
-            className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-grey/40 shadow-sm backdrop-blur-sm transition-colors"
+            className="w-full rounded-lg border border-white/20 bg-white text-black placeholder-gray-400 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors custom-input"
           />
         </div>
 
@@ -203,7 +203,7 @@ export default function OnboardingCard() {
             value={data.managerMessage}
             onChange={(e) => setData({ ...data, managerMessage: e.target.value })}
             placeholder="Enter a welcome message from your manager"
-            className="w-full rounded-md border-gray-700 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+            className="w-full rounded-md border border-white/20 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px] custom-textarea"
           />
         </div>
 
