@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Input from "@/components/ui/Input";
 import { downloadAsImage } from "@/lib/utils";
 import type { OnboardingCardData } from "@/types";
-import { getManagerData } from "@/lib/airtable";
+import { getManagerData, getAllManagerNames } from "@/lib/airtable";
 import { debounce } from "lodash";
 
 export default function OnboardingCard() {
@@ -25,9 +25,44 @@ export default function OnboardingCard() {
 
   const [preview, setPreview] = useState(true);
   const [isLoadingManager, setIsLoadingManager] = useState(false);
+  const [managerOptions, setManagerOptions] = useState<string[]>([]);
+  const [filteredOptions, setFilteredOptions] = useState<string[]>([]);
+  const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const userImageRef = useRef<HTMLInputElement>(null);
   const managerImageRef = useRef<HTMLInputElement>(null);
+  const suggestionRef = useRef<HTMLDivElement>(null);
+
+  // Add click outside listener to close suggestions
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Load manager options when component mounts
+  useEffect(() => {
+    const loadManagerOptions = async () => {
+      setIsLoadingOptions(true);
+      try {
+        const names = await getAllManagerNames();
+        setManagerOptions(names);
+      } catch (error) {
+        console.error("Error loading manager options:", error);
+        toast.error("Failed to load manager options");
+      } finally {
+        setIsLoadingOptions(false);
+      }
+    };
+    
+    loadManagerOptions();
+  }, []);
 
   const handleDownload = async () => {
     try {
@@ -108,10 +143,32 @@ export default function OnboardingCard() {
     []
   );
 
-  const handleManagerNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleManagerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
     setData(prev => ({ ...prev, reportingManager: newName }));
+    
+    // Filter options based on input (case-insensitive)
+    if (newName.trim()) {
+      const filtered = managerOptions.filter(name => 
+        name.toLowerCase().includes(newName.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setFilteredOptions([]);
+      setShowSuggestions(false);
+      // Clear manager image if input is empty
+      setData(prev => ({ ...prev, managerImage: null }));
+    }
+    
+    // Debounce fetching manager data when typing
     debouncedFetchManagerData(newName);
+  };
+
+  const handleSelectManager = (name: string) => {
+    setData(prev => ({ ...prev, reportingManager: name }));
+    setShowSuggestions(false);
+    fetchManagerData(name);
   };
 
   return (
@@ -242,16 +299,46 @@ export default function OnboardingCard() {
               className="hidden"
             />
           </div>
-          <input
-            value={data.reportingManager}
-            onChange={handleManagerNameChange}
-            placeholder="Enter your manager's name"
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 shadow-sm transition-colors"
-            style={{
-              color: 'black !important',
-              caretColor: 'black !important'
-            }}
-          />
+          <div className="relative">
+            <input
+              value={data.reportingManager}
+              onChange={handleManagerNameChange}
+              onFocus={() => data.reportingManager.trim() && setShowSuggestions(true)}
+              placeholder="Start typing manager's name"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 shadow-sm transition-colors"
+              style={{
+                color: 'black !important',
+                caretColor: 'black !important'
+              }}
+            />
+            
+            {/* Suggestions dropdown */}
+            {showSuggestions && filteredOptions.length > 0 && (
+              <div 
+                ref={suggestionRef}
+                className="absolute z-10 mt-1 w-full max-h-60 overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+              >
+                {filteredOptions.map((name, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 text-black hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSelectManager(name)}
+                  >
+                    {name}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {isLoadingOptions && (
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="animate-spin h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+            )}
+          </div>
         </div>
 
         <div>
