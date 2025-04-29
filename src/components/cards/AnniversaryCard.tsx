@@ -216,7 +216,7 @@ export default function AnniversaryCard() {
             </div>
 
             {/* Message */}
-            <div className="text-[#FFF4EA] text-opacity-80 max-w-md text-sm mx-auto">{data.message || "Here&apos;s to your incredible journey with us. Thank you for your continued dedication and for being an invaluable part of our team!"}</div>
+            <div className="text-[#FFF4EA] text-opacity-80 max-w-md text-sm mx-auto">{data.message || "Congratulations on reaching another milestone with us! We truly appreciate your dedication and hard work, and we're grateful for everything you de-Wishing you continued success and many more great years ahead!"}</div>
           </div>
         </div>
       </div>

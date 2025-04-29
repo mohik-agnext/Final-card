@@ -137,7 +137,7 @@ export default function BirthdayCard() {
                     fontFamily: 'var(--font-dancing-script)',
                     textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
                     lineHeight: '1.2', // Added line height
-                    padding: '4px 0' // Added padding
+                    
                   }}
                 >
                   {data.name || "Full Name"}
