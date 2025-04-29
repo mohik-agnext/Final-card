@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import BackButton from "@/components/ui/BackButton";
+import Footer from "@/components/ui/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const dancingScript = Dancing_Script({ 
@@ -30,7 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${dancingScript.variable} font-sans`}>
-        {children}
+        <BackButton />
+        <main>
+          {children}
+        </main>
+        <Footer />
         <Toaster position="bottom-right" />
       </body>
     </html>

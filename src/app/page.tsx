@@ -20,16 +20,17 @@ export default function Home() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center">
-        <h1 className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-6xl">
-          Celebration Cards
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
-          Create beautiful cards for every special occasion
-        </p>
+        <div className="flex justify-center mb-8 pt-4">
+          <img 
+            src="/assets/templates/logo.png"
+            alt="AgNext Logo"
+            className="h-20 object-contain"
+          />
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="mt-16">
+      <div className="mt-10">
         <div className="glass-panel">
           {/* Tabs */}
           <div className="border-b border-white/10">

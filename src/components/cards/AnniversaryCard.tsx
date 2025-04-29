@@ -161,7 +161,7 @@ export default function AnniversaryCard() {
               AGNEXT
             </h1>
           </div>
-
+          
           {/* Main Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center px-12 text-center">
             <div className="mb-8">
