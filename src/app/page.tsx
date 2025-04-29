@@ -20,11 +20,11 @@ export default function Home() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center">
-        <div className="flex justify-center mb-8 pt-4">
+        <div className="flex justify-center mb-6">
           <img 
             src="/assets/templates/logo.png"
             alt="AgNext Logo"
-            className="h-20 object-contain"
+            className="h-12 object-contain"
           />
         </div>
       </div>

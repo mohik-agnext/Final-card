@@ -32,10 +32,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} ${dancingScript.variable} font-sans`}>
-        <BackButton />
-        <main>
-          {children}
-        </main>
+        <div className="relative">
+          <BackButton />
+          <main>
+            {children}
+          </main>
+        </div>
         <Footer />
         <Toaster position="bottom-right" />
       </body>

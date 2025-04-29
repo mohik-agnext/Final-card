@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="mt-12 pb-8 text-center text-sm text-white/50">
+    <footer className="mt-1 pb-3 text-center text-sm text-white/50">
       <div className="flex items-center justify-center gap-2">
         <p>Made by</p>
         <a 
