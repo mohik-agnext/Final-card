@@ -23,12 +23,15 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
-.env
+
+
 
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts 
+next-env.d.ts
+
+NEXT_PUBLIC_AIRTABLE_API_KEY="pat38Us4BfbgycMcS.c65ae555b97791af3fa984782b30ee1d7f4d188671072e9d65846a5801c293e0"
+NEXT_PUBLIC_AIRTABLE_BASE_ID="app1234567890" 

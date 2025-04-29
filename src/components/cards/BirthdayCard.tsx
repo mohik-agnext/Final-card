@@ -69,8 +69,12 @@ export default function BirthdayCard() {
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               placeholder="Enter your name"
-              maxLength={30} // Reasonable max length
-              className="bg-white border-gray-200 text-black placeholder-gray-400 custom-input"
+              maxLength={30}
+              className="bg-white border-gray-300 text-black placeholder-gray-400 focus:border-blue-500"
+              style={{
+                color: 'black !important',
+                caretColor: 'black !important'
+              }}
             />
 
             <div className="mt-6">

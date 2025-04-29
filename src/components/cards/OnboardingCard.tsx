@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import Input from "@/components/ui/Input";
 import { downloadAsImage } from "@/lib/utils";
 import type { OnboardingCardData } from "@/types";
+import { getManagerData } from "@/lib/airtable";
+import { debounce } from "lodash";
 
 export default function OnboardingCard() {
   const [data, setData] = useState<OnboardingCardData>({
@@ -22,6 +24,7 @@ export default function OnboardingCard() {
   });
 
   const [preview, setPreview] = useState(true);
+  const [isLoadingManager, setIsLoadingManager] = useState(false);
 
   const userImageRef = useRef<HTMLInputElement>(null);
   const managerImageRef = useRef<HTMLInputElement>(null);
@@ -67,6 +70,50 @@ export default function OnboardingCard() {
     }
   };
 
+  const fetchManagerData = async (name: string) => {
+    if (!name) {
+      setData(prev => ({ ...prev, managerImage: null }));
+      return;
+    }
+
+    setIsLoadingManager(true);
+    try {
+      console.log('Fetching manager data for:', name); // Debug log
+      const managerData = await getManagerData(name);
+      console.log('Received manager data:', managerData); // Debug log
+
+      if (managerData?.imageUrl) {
+        setData(prev => ({
+          ...prev,
+          managerImage: managerData.imageUrl
+        }));
+        toast.success("Manager image loaded successfully!");
+      } else {
+        setData(prev => ({ ...prev, managerImage: null }));
+        toast.error("No manager image found for this name");
+      }
+    } catch (error) {
+      console.error("Error fetching manager data:", error);
+      toast.error("Failed to fetch manager image. Please check console for details.");
+    } finally {
+      setIsLoadingManager(false);
+    }
+  };
+
+  // Add debounce to prevent too many API calls
+  const debouncedFetchManagerData = useCallback(
+    debounce((name: string) => {
+      fetchManagerData(name);
+    }, 500),
+    []
+  );
+
+  const handleManagerNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setData(prev => ({ ...prev, reportingManager: newName }));
+    debouncedFetchManagerData(newName);
+  };
+
   return (
     <div className="grid gap-8 md:grid-cols-2">
       <div className="space-y-6">
@@ -100,7 +147,11 @@ export default function OnboardingCard() {
               value={data.name}
               onChange={(e) => setData({ ...data, name: e.target.value })}
               placeholder="Enter your name"
-              className="w-full rounded-lg border border-white/20 bg-white text-black placeholder-gray-400 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors custom-input"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 shadow-sm transition-colors"
+              style={{
+                color: 'black !important',
+                caretColor: 'black !important'
+              }}
             />
           </div>
           <div className="col-span-1">
@@ -109,7 +160,7 @@ export default function OnboardingCard() {
               value={data.designation}
               onChange={(e) => setData({ ...data, designation: e.target.value })}
               placeholder="Enter your job title"
-              className="placeholder-gray-400 text-black bg-white custom-input"
+              className="placeholder-gray-400 text-black"
             />
           </div>
         </div>
@@ -122,7 +173,7 @@ export default function OnboardingCard() {
               onChange={(e) => setData({ ...data, email: e.target.value })}
               placeholder="Enter your email address"
               type="email"
-              className="placeholder-gray-400 text-black bg-white custom-input"
+              className="placeholder-gray-400 text-white"
             />
           </div>
           <div className="col-span-1">
@@ -131,7 +182,7 @@ export default function OnboardingCard() {
               value={data.phone}
               onChange={(e) => setData({ ...data, phone: e.target.value })}
               placeholder="Enter your phone number"
-              className="placeholder-gray-400 text-black bg-white custom-input"
+              className="placeholder-gray-400 text-white"
             />
           </div>
         </div>
@@ -143,7 +194,7 @@ export default function OnboardingCard() {
               value={data.education}
               onChange={(e) => setData({ ...data, education: e.target.value })}
               placeholder="Enter your education qualification"
-              className="placeholder-gray-400 text-black bg-white custom-input"
+              className="placeholder-gray-400 text-white"
             />
           </div>
           <div className="col-span-1">
@@ -152,7 +203,7 @@ export default function OnboardingCard() {
               value={data.location}
               onChange={(e) => setData({ ...data, location: e.target.value })}
               placeholder="Enter your work location"
-              className="placeholder-gray-400 text-black bg-white custom-input"
+              className="placeholder-gray-400 text-white"
             />
           </div>
         </div>
@@ -165,7 +216,11 @@ export default function OnboardingCard() {
             value={data.welcomeMessage}
             onChange={(e) => setData({ ...data, welcomeMessage: e.target.value })}
             placeholder="Write a short welcome message or professional summary"
-            className="w-full rounded-md border border-white/20 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px] custom-textarea"
+            className="w-full rounded-md border-gray-300 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+            style={{
+              color: 'black !important',
+              caretColor: 'black !important'
+            }}
           />
         </div>
 
@@ -177,7 +232,7 @@ export default function OnboardingCard() {
               onClick={() => managerImageRef.current?.click()}
               className="text-xs bg-white/10 text-white/70 hover:text-white rounded-full py-1 px-3 border border-white/20"
             >
-              Upload Photo
+              {isLoadingManager ? "Loading..." : "Upload Photo"}
             </button>
             <input
               ref={managerImageRef}
@@ -189,9 +244,13 @@ export default function OnboardingCard() {
           </div>
           <input
             value={data.reportingManager}
-            onChange={(e) => setData({ ...data, reportingManager: e.target.value })}
+            onChange={handleManagerNameChange}
             placeholder="Enter your manager's name"
-            className="w-full rounded-lg border border-white/20 bg-white text-black placeholder-gray-400 px-4 py-3 shadow-sm backdrop-blur-sm transition-colors custom-input"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder-gray-400 shadow-sm transition-colors"
+            style={{
+              color: 'black !important',
+              caretColor: 'black !important'
+            }}
           />
         </div>
 
@@ -203,7 +262,11 @@ export default function OnboardingCard() {
             value={data.managerMessage}
             onChange={(e) => setData({ ...data, managerMessage: e.target.value })}
             placeholder="Enter a welcome message from your manager"
-            className="w-full rounded-md border border-white/20 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px] custom-textarea"
+            className="w-full rounded-md border-gray-300 bg-white text-black placeholder-gray-400 p-3 focus:border-blue-500 focus:ring-blue-500 min-h-[80px]"
+            style={{
+              color: 'black !important',
+              caretColor: 'black !important'
+            }}
           />
         </div>
 
