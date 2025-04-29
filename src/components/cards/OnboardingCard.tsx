@@ -62,6 +62,9 @@ export default function OnboardingCard() {
     };
     
     loadManagerOptions();
+    
+    // Log force update timestamp (for debugging)
+    console.log("Force update:", process.env.NEXT_PUBLIC_FORCE_UPDATE);
   }, []);
 
   const handleDownload = async () => {
@@ -145,6 +148,9 @@ export default function OnboardingCard() {
 
   const handleManagerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newName = e.target.value;
+    console.log("Setting manager name to:", newName); // Add debug log
+    
+    // Update the reportingManager field in the data state
     setData(prev => ({ ...prev, reportingManager: newName }));
     
     // Filter options based on input (case-insensitive)
@@ -166,9 +172,14 @@ export default function OnboardingCard() {
   };
 
   const handleSelectManager = (name: string) => {
+    console.log("Selected manager name:", name); // Add debug log
+    
+    // Set the reporting manager name
     setData(prev => ({ ...prev, reportingManager: name }));
     setShowSuggestions(false);
-    debouncedFetchManagerData(name);
+    
+    // Fetch manager data
+    fetchManagerData(name);
   };
 
   return (
@@ -540,7 +551,9 @@ export default function OnboardingCard() {
               </div>
               <div className="flex-1">
                 <div className="text-[#2F7164] italic text-sm font-medium leading-relaxed max-h-18 overflow-auto">&quot;{data.managerMessage || "A welcome message from your manager will appear here. This typically includes a greeting and brief introduction to the team."}&quot;</div>
-                <div className="text-xs font-medium text-gray-700 mt-1">{data.reportingManager || "Manager Name"}</div>
+                <div className="text-xs font-medium text-gray-700 mt-1">
+                  {data.reportingManager ? `Manager: ${data.reportingManager}` : "Manager Name"}
+                </div>
               </div>
             </div>
 
