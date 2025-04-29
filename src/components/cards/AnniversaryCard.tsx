@@ -15,13 +15,14 @@ export default function AnniversaryCard() {
   const [preview, setPreview] = useState(true);
 
   // Custom styles to ensure input text is visible
-  const inputStyle = {
-    color: 'white',
-    fontWeight: '500'
-  };
+  // Commented out unused variables:
+  // const inputStyle = {
+  //   color: 'white',
+  //   fontWeight: '500'
+  // };
 
   // Custom class name with !important to override existing styles
-  const overrideClass = "anniversary-input-field";
+  // const overrideClass = "anniversary-input-field";
 
   const getOrdinalSuffix = (num: number) => {
     const j = num % 10;
@@ -215,12 +216,7 @@ export default function AnniversaryCard() {
             </div>
 
             {/* Message */}
-            <div className="max-w-xl text-center">
-              <p className="text-lg leading-relaxed text-white/90">
-                Congratulations on reaching another milestone with us! We truly appreciate
-                your dedication and hard work, and we're grateful for everything you do.
-              </p>
-            </div>
+            <div className="text-[#FFF4EA] text-opacity-80 max-w-md text-sm mx-auto">{data.message || "Here&apos;s to your incredible journey with us. Thank you for your continued dedication and for being an invaluable part of our team!"}</div>
           </div>
         </div>
       </div>

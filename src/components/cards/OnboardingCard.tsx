@@ -256,7 +256,7 @@ export default function OnboardingCard() {
 
         <div>
           <label className="block text-sm font-medium text-white mb-2">
-            Manager's Message
+            Manager&apos;s Message
           </label>
           <textarea
             value={data.managerMessage}
@@ -444,7 +444,7 @@ export default function OnboardingCard() {
                 </div>
               </div>
               <div className="flex-1">
-                <div className="text-[#2F7164] italic text-sm font-medium leading-relaxed max-h-18 overflow-auto">"{data.managerMessage || "A welcome message from your manager will appear here. This typically includes a greeting and brief introduction to the team."}"</div>
+                <div className="text-[#2F7164] italic text-sm font-medium leading-relaxed max-h-18 overflow-auto">&quot;{data.managerMessage || "A welcome message from your manager will appear here. This typically includes a greeting and brief introduction to the team."}&quot;</div>
                 <div className="text-xs font-medium text-gray-700 mt-1">{data.reportingManager || "Manager Name"}</div>
               </div>
             </div>
