@@ -168,7 +168,7 @@ export default function OnboardingCard() {
   const handleSelectManager = (name: string) => {
     setData(prev => ({ ...prev, reportingManager: name }));
     setShowSuggestions(false);
-    fetchManagerData(name);
+    debouncedFetchManagerData(name);
   };
 
   return (
@@ -384,7 +384,7 @@ export default function OnboardingCard() {
         style={{ width: '800px', height: '810px', maxWidth: '100%', maxHeight: '100%' }}
       >
         {/* Top Banner with Welcome Text */}
-        <div className="absolute top-0 left-0 w-full h-28 bg-[#2F7164] flex flex-col items-center justify-center">
+        <div className="absolute top-0 left-0 w-full h-32 bg-[#2F7164] flex flex-col items-center justify-center">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute inset-0 bg-opacity-30 overflow-hidden">
               {/* Small circles pattern created with CSS */}
@@ -394,12 +394,12 @@ export default function OnboardingCard() {
               }}></div>
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-white tracking-wide z-10">WELCOME</h1>
-          <h2 className="text-3xl font-semibold text-white tracking-wider z-10">ABOARD</h2>
+          <h1 className="text-4xl font-bold text-white tracking-wide z-10 mb-1">WELCOME</h1>
+          <h2 className="text-2xl font-semibold text-white tracking-wider z-10">ABOARD</h2>
         </div>
 
         {/* Main Content */}
-        <div className="absolute top-28 left-0 w-full h-[calc(100%-28px)] bg-white flex flex-col">
+        <div className="absolute top-32 left-0 w-full h-[calc(100%-32px)] bg-white flex flex-col">
           {/* Profile Section - Top 40% */}
           <div className="h-[40%] flex flex-col">
             {/* Photo and Name */}
@@ -408,7 +408,13 @@ export default function OnboardingCard() {
               <div className="flex-shrink-0 mr-6 relative">
                 <div className="w-48 h-48 rounded-full border-4 border-white overflow-hidden shadow-lg">
                   {data.userImage ? (
-                    <img src={data.userImage} alt="User" className="w-full h-full object-cover" />
+                    <img 
+                      src={data.userImage} 
+                      alt="User" 
+                      width={192} 
+                      height={192} 
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-[#40907F] flex items-center justify-center">
                       <span className="text-4xl font-semibold text-white">
@@ -421,7 +427,7 @@ export default function OnboardingCard() {
 
               {/* Info Section */}
               <div className="flex-grow">
-                <div className="relative mb-3">
+                <div className="relative mb-2">
                   <div className="flex items-center">
                     <div className="relative">
                       <svg className="w-1 h-1 text-[#2F7164] opacity-0" viewBox="0 0 100 100" fill="currentColor">
@@ -448,7 +454,7 @@ export default function OnboardingCard() {
             </div>
 
             {/* Welcome Message */}
-            <div className="px-8 py-2 flex-grow overflow-auto">
+            <div className="px-8 py-2 flex-grow ">
               <div className="text-sm text-gray-700 leading-relaxed">{data.welcomeMessage || "Your professional summary or welcome note goes here. Include your core skills, professional interests and what you're looking forward to in this role."}</div>
             </div>
           </div>
@@ -496,34 +502,36 @@ export default function OnboardingCard() {
             </div>
 
             {/* Contact Cards */}
-            <div className="w-full px-6 py-3 flex justify-center gap-8">
-              <div className="flex items-center px-4 py-2 bg-gray-100 rounded-lg shadow-sm">
-                <svg className="w-4 h-4 text-[#2F7164] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-full px-6 py-3 flex justify-center items-center gap-8">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg shadow-sm min-w-[200px] justify-center h-8">
+                <svg className="w-4 h-4 text-[#2F7164]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span className="text-xs text-gray-700">{data.email || "username@company.com"}</span>
               </div>
-              <div className="flex items-center px-4 py-2 bg-gray-100 rounded-lg shadow-sm">
-                <svg className="w-4 h-4 text-[#2F7164] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg shadow-sm min-w-[200px] justify-center h-8">
+                <svg className="w-4 h-4 text-[#2F7164]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 <span className="text-xs text-gray-700">{data.phone || "9876XXXXX"}</span>
               </div>
             </div>
 
-
-            
-
-
             {/* Manager Message Section */}
             <div className="w-full bg-[#FFFAC6] py-5 px-8 flex items-start mt-[-20]">
               <div className="flex-shrink-0 mr-4 relative">
                 <div className="w-14 h-14 rounded-full border-2 border-[#2F7164] overflow-hidden">
                   {data.managerImage ? (
-                    <img src={data.managerImage} alt="Manager" className="w-full h-full object-cover" />
+                    <img 
+                      src={data.managerImage} 
+                      alt="Manager" 
+                      width={56} 
+                      height={56} 
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full bg-[#2F7164]/80 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
