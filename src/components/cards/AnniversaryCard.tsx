@@ -161,7 +161,7 @@ export default function AnniversaryCard(): JSX.Element {
       </div>
 
       {/* Card Preview Section */}
-      <div className="relative w-full min-h-screen flex items-center justify-center p-8" style={{ marginTop: '-30px' }}>
+      <div className="relative w-full min-h-screen flex items-center justify-center p-8" style={{ marginTop: '-50px' }}>
         <div
           className="relative overflow-hidden rounded-lg shadow-xl mx-auto" 
           id="anniversary-card"
