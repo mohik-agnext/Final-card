@@ -1,37 +1,91 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
+import { Dancing_Script } from "next/font/google";
 import { toast } from "react-hot-toast";
 import Input from "@/components/ui/Input";
 import { downloadAsImage } from "@/lib/utils";
-import type { AnniversaryCardData } from "@/types";
+import type { JSX } from "react";
 
-export default function AnniversaryCard() {
-  const [data, setData] = useState<AnniversaryCardData>({
+const dancingScript = Dancing_Script({
+  weight: ['700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+interface CardData {
+  name: string;
+  designation: string;
+  yearsOfService: string;
+}
+
+const getOrdinalNum = (number: number): string => {
+  const suffixes = ['th', 'st', 'nd', 'rd'];
+  const v = number % 100;
+  return number + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+};
+
+export default function AnniversaryCard(): JSX.Element {
+  const [data, setData] = useState<CardData>({
     name: "",
     designation: "",
-    yearsOfService: 1,
+    yearsOfService: ""
   });
   const [preview, setPreview] = useState(true);
+  const nameRef = useRef<HTMLParagraphElement>(null);
+  const designationRef = useRef<HTMLParagraphElement>(null);
+  const [nameFontSize, setNameFontSize] = useState(24);
+  const [designationFontSize, setDesignationFontSize] = useState(20);
 
-  // Custom styles to ensure input text is visible
-  // Commented out unused variables:
-  // const inputStyle = {
-  //   color: 'white',
-  //   fontWeight: '500'
-  // };
-
-  // Custom class name with !important to override existing styles
-  // const overrideClass = "anniversary-input-field";
-
-  const getOrdinalSuffix = (num: number) => {
-    const j = num % 10;
-    const k = num % 100;
-    if (j === 1 && k !== 11) return "st";
-    if (j === 2 && k !== 12) return "nd";
-    if (j === 3 && k !== 13) return "rd";
-    return "th";
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setData({ ...data, name: e.target.value });
   };
+
+  const handleDesignationChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setData({ ...data, designation: e.target.value });
+  };
+
+  const handleYearsChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === '' || /^[0-9]+$/.test(value)) {
+      setData({ ...data, yearsOfService: value });
+    }
+  };
+
+  // Adjust font size based on text length
+  useEffect(() => {
+    if (!nameRef.current || !designationRef.current) return;
+    
+    const baseNameSize = 24;
+    const baseDesignationSize = 20;
+    
+    const maxNameWidth = 600;
+    const maxDesignationWidth = 500;
+    
+    if (data.name) {
+      setNameFontSize(baseNameSize);
+      nameRef.current.style.fontSize = `${baseNameSize}px`;
+      
+      let currentSize = baseNameSize;
+      while (nameRef.current.scrollWidth > maxNameWidth && currentSize > 20) {
+        currentSize -= 2;
+        nameRef.current.style.fontSize = `${currentSize}px`;
+        setNameFontSize(currentSize);
+      }
+    }
+
+    if (data.designation) {
+      setDesignationFontSize(baseDesignationSize);
+      designationRef.current.style.fontSize = `${baseDesignationSize}px`;
+      
+      let currentSize = baseDesignationSize;
+      while (designationRef.current.scrollWidth > maxDesignationWidth && currentSize > 24) {
+        currentSize -= 2;
+        designationRef.current.style.fontSize = `${currentSize}px`;
+        setDesignationFontSize(currentSize);
+      }
+    }
+  }, [data.name, data.designation]);
 
   const handleDownload = async () => {
     try {
@@ -42,17 +96,9 @@ export default function AnniversaryCard() {
     }
   };
 
-  const resetForm = () => {
-    setData({
-      name: "",
-      designation: "",
-      yearsOfService: 1,
-    });
-    toast.success("Form reset successfully!");
-  };
-
   return (
     <div className="grid gap-8 md:grid-cols-2">
+      {/* Form Section */}
       <div className="space-y-6">
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-white">Work Anniversary Card</h2>
@@ -61,165 +107,122 @@ export default function AnniversaryCard() {
           </p>
         </div>
 
-        {/* Custom style for inputs */}
-        <style jsx>{`
-          .anniversary-input-field input {
-            color: white !important;
-          }
-        `}</style>
-
         <Input
           label="Name"
           value={data.name}
-          onChange={(e) => setData({ ...data, name: e.target.value })}
-          placeholder="Enter your name"
-          className="placeholder-gray-400 text-black"
-          style={{
-            color: 'black !important',
-            caretColor: 'black !important'
-          }}
+          onChange={handleNameChange}
+          placeholder="Enter name"
+          maxLength={30}
+          className="bg-white border-gray-300 text-black placeholder-gray-400 focus:border-blue-500"
+        />
+        <Input
+          label="Years of Service"
+          value={data.yearsOfService}
+          onChange={handleYearsChange}
+          placeholder="Enter years (e.g. 5)"
+          type="text"
+          maxLength={2}
+          className="bg-white border-gray-300 text-black placeholder-gray-400 focus:border-blue-500"
         />
         <Input
           label="Designation"
           value={data.designation}
-          onChange={(e) => setData({ ...data, designation: e.target.value })}
-          placeholder="Enter your designation"
-          className="placeholder-gray-400 text-black"
-          style={{
-            color: 'black !important',
-            caretColor: 'black !important'
-          }}
+          onChange={handleDesignationChange}
+          placeholder="Enter designation"
+          maxLength={50}
+          className="bg-white border-gray-300 text-black placeholder-gray-400 focus:border-blue-500"
         />
-        <Input
-          type="number"
-          label="Years of Service"
-          min={1}
-          value={data.yearsOfService}
-          onChange={(e) =>
-            setData({ ...data, yearsOfService: parseInt(e.target.value) || 1 })
-          }
-          placeholder="Enter years of service"
-          className="placeholder-gray-400 text-black"
-          style={{
-            color: 'black !important',
-            caretColor: 'black !important'
-          }}
-        />
-        <button
-          onClick={handleDownload}
-          disabled={!data.name}
-          className="btn-primary w-full"
-        >
-          Download Card
-        </button>
-        
-        <div className="mt-2 flex gap-2">
-          <label className="flex items-center text-sm text-white/70">
-            <input
-              type="checkbox"
-              checked={preview}
-              onChange={() => setPreview(!preview)}
-              className="mr-2 h-4 w-4 rounded border-gray-300"
-            />
-            Show live preview
-          </label>
-          
-          <button
-            type="button"
-            onClick={resetForm}
-            className="ml-auto text-sm text-white/70 hover:text-white underline"
-          >
-            Reset Form
-          </button>
+
+        <div className="glass-panel p-5">
+          <div className="flex flex-col space-y-4">
+            <button
+              onClick={handleDownload}
+              disabled={!data.name || !data.designation}
+              className="btn-primary w-full"
+            >
+              Download Card
+            </button>
+
+            <div className="mt-3">
+              <label className="flex items-center text-sm text-white/70">
+                <input
+                  type="checkbox"
+                  checked={preview}
+                  onChange={() => setPreview(!preview)}
+                  className="mr-2 h-4 w-4 rounded border-gray-300"
+                />
+                Show live preview
+              </label>
+            </div>
+          </div>
+
+
         </div>
       </div>
 
-      <div 
-        className={`relative w-full aspect-[4/3] rounded-lg overflow-hidden ${preview ? 'block' : 'hidden'}`}
-        id="anniversary-card"
-        style={{ width: '800px', height: '600px', maxWidth: '100%', maxHeight: '100%' }}
-      >
-        <div className="absolute inset-0 bg-[#1a2b44] overflow-hidden">
-          {/* Sparkle effect */}
-          <div className="absolute inset-0 opacity-50">
-            {[...Array(40)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 bg-yellow-200 rounded-full animate-twinkle"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                }}
-              />
-            ))}
+      {/* Card Preview Section */}
+      <div className={`relative ${preview ? 'block' : 'hidden'}`}>
+        <div 
+          className="relative overflow-hidden rounded-lg shadow-xl mx-auto" 
+          id="anniversary-card"
+          style={{ 
+            width: '1000px',
+            height: '550px',
+            maxWidth: '100%'
+          }}
+        >
+          <div className="w-full h-full overflow-hidden">
+            <img
+              src="/assets/templates/anniversary.png"
+              alt="Anniversary Card Template"
+              className="w-full h-full"
+              style={{
+                objectFit: 'fill',
+                display: 'block'
+              }}
+            />
           </div>
-          
-          {/* Logo */}
-          <div className="absolute top-0 left-0 right-0 pt-10 px-6">
-            <h1 className="text-white text-3xl font-bold text-center tracking-wider">
-              AGNEXT
-            </h1>
+
+          {/* Years of Service */}
+          <div 
+            className="absolute text-center z-8"
+            style={{
+              top: '28%',
+              left: '15%',
+              transform: 'translateY(-50%)'
+            }}
+          >
+            <span
+              className={`${dancingScript.className} text-[#FFD700] text-4xl tracking-normal inline-block`}
+              style={{
+                textShadow: '2px 2px 8px rgba(255, 215, 0, 0.6), -2px -2px 8px rgba(255, 215, 0, 0.6)',
+                WebkitTextStroke: '1px rgba(128, 96, 0, 0.3)',
+                transform: 'rotate(-1deg)'
+              }}
+            >
+              {data.yearsOfService ? getOrdinalNum(parseInt(data.yearsOfService)) : 'X'}
+            </span>
           </div>
-          
-          {/* Main Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center px-12 text-center">
-            <div className="mb-8">
-              <h2 className="text-5xl font-serif text-white mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
-                HAPPY
-              </h2>
-              <div className="flex items-baseline justify-center gap-3">
-                <span className="text-5xl font-serif" style={{ 
-                  color: '#FFD700',
-                  textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                  fontFamily: 'Playfair Display, serif'
-                }}>
-                  {data.yearsOfService}
-                  <span className="text-2xl align-super ml-0.5">
-                    {getOrdinalSuffix(data.yearsOfService)}
-                  </span>
-                </span>
-                <h1 className="text-5xl font-serif text-white" style={{ fontFamily: 'Playfair Display, serif' }}>
-                  Work Anniversary
-                </h1>
-              </div>
-            </div>
 
-            {/* Blue Ribbon */}
-            <div className="w-full relative mb-8">
-              {/* Left ribbon tail */}
-              <div className="absolute -left-3 top-0 h-6 w-8 bg-blue-600 "></div>
-              <div className="absolute -left-4 top-6 h-6 w-6 bg-blue-800 clip-triangle"></div>
-              
-              {/* Main ribbon */}
-              <div className="relative h-24">
-                {/* Gradient background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 ">
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent"></div>
-                </div>
-                
-                {/* Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <h3 className="text-3xl font-bold text-white mb-1">
-                    {data.name || "Full Name"}
-                  </h3>
-                  <p className="text-xl text-white/90 italic">
-                    {data.designation || "Job Title / Position"}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Right ribbon tail */}
-              <div className="absolute -right-3 top-0 h-6 w-8 bg-blue-600 transform skew-x-12"></div>
-              <div className="absolute -right-4 top-6 h-6 w-6 bg-blue-800 clip-triangle-right"></div>
-            </div>
-
-            {/* Message */}
-            <div className="text-[#FFF4EA] text-opacity-80 max-w-md text-sm mx-auto">{data.message || "Congratulations on reaching another milestone with us! We truly appreciate your dedication and hard work, and we're grateful for everything you de-Wishing you continued success and many more great years ahead!"}</div>
+          {/* Name and Designation */}
+          <div className="absolute top-[49%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-8 w-[80%]">
+            <p
+              ref={nameRef}
+              className="font-semibold mb-0 whitespace-nowrap overflow-visible"
+              style={{ fontSize: `${nameFontSize}px` }}
+            >
+              {data.name || "Enter Name"}
+            </p>
+            <p
+              ref={designationRef}
+              className="text-white/90 whitespace-nowrap overflow-visible"
+              style={{ fontSize: `${designationFontSize}px` }}
+            >
+              {data.designation || "Enter Designation"}
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

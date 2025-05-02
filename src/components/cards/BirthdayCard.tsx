@@ -1,10 +1,17 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Dancing_Script } from "next/font/google";
 import { toast } from "react-hot-toast";
 import Input from "@/components/ui/Input";
 import { downloadAsImage } from "@/lib/utils";
 import type { BirthdayCardData } from "@/types";
+
+const dancingScript = Dancing_Script({
+  weight: ['700'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function BirthdayCard() {
   const [data, setData] = useState<BirthdayCardData>({
@@ -109,6 +116,47 @@ export default function BirthdayCard() {
           id="birthday-card"
           style={{ aspectRatio: "3/2" }}
         >
+          {/* Stars container */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Large golden stars */}
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={`large-gold-star-${i}`}
+                className="absolute rounded-full animate-twinkle"
+                style={{
+                  width: '3px',
+                  height: '3px',
+                  backgroundColor: '#FFD700',
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.9 + 0.1,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: '3s',
+                  boxShadow: '0 0 2px #FFD700'
+                }}
+              />
+            ))}
+
+            {/* Small golden stars */}
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={`small-gold-star-${i}`}
+                className="absolute rounded-full animate-twinkle"
+                style={{
+                  width: '1.5px',
+                  height: '1.5px',
+                  backgroundColor: '#FFD700',
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity: Math.random() * 0.7 + 0.3,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: '4s',
+                  boxShadow: '0 0 1px #FFD700'
+                }}
+              />
+            ))}
+          </div>
+
           {/* Background Image with cache busting */}
           <img
             src={`/assets/templates/birthday.jpg?v=${new Date().getTime()}`}
@@ -131,13 +179,11 @@ export default function BirthdayCard() {
               >
                 <p 
                   ref={nameRef}
-                  className="font-bold text-white whitespace-nowrap"
+                  className={`${dancingScript.className} font-bold text-white whitespace-nowrap`}
                   style={{ 
                     fontSize: `${fontSize}px`,
-                    fontFamily: 'var(--font-dancing-script)',
                     textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
-                    lineHeight: '1.2', // Added line height
-                    
+                    lineHeight: '1.2'
                   }}
                 >
                   {data.name || "Full Name"}

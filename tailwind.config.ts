@@ -28,6 +28,15 @@ const config: Config = {
         sans: ["var(--font-inter)"],
         cursive: ["var(--font-dancing-script)", "cursive"],
       },
+      keyframes: {
+        twinkle: {
+          '0%, 100%': { opacity: '0.2' },
+          '50%': { opacity: '1' },
+        },
+      },
+      animation: {
+        twinkle: 'twinkle 3s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

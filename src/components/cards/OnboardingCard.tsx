@@ -108,7 +108,7 @@ export default function OnboardingCard() {
     }
   };
 
-  const fetchManagerData = async (name: string) => {
+  const fetchManagerData = useCallback(async (name: string) => {
     if (!name) {
       setData(prev => ({ ...prev, managerImage: null }));
       return;
@@ -136,14 +136,15 @@ export default function OnboardingCard() {
     } finally {
       setIsLoadingManager(false);
     }
-  };
+  }, [setData, setIsLoadingManager]);
 
   // Add debounce to prevent too many API calls
-  const debouncedFetchManagerData = useCallback(
-    debounce((name: string) => {
+  const debouncedFetchManagerData = useCallback((name: string) => {
+    const debouncedFn = debounce(() => {
       fetchManagerData(name);
-    }, 500),
-    []
+    }, 500);
+    debouncedFn();
+  }, [fetchManagerData]
   );
 
   const handleManagerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

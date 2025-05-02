@@ -8,8 +8,6 @@ export interface BirthdayCardData extends BaseCardData {}
 
 export interface AnniversaryCardData extends BaseCardData {
   designation: string;
-  yearsOfService: number;
-  message?: string;
 }
 
 export interface OnboardingCardData extends BaseCardData {

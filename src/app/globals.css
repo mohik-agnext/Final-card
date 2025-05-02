@@ -37,6 +37,38 @@
   }
 }
 
+/* Anniversary Card Animations */
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes shine {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-shine {
+  animation: shine 8s linear infinite;
+}
+
+/* Ribbon clip paths */
+.clip-triangle {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.clip-triangle-right {
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
 .card-preview {
   @apply relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-white/10 shadow-2xl backdrop-blur-sm border border-white/10 transition-transform hover:scale-[1.02];
 }
