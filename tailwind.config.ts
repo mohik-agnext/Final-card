@@ -27,6 +27,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)"],
         cursive: ["var(--font-dancing-script)", "cursive"],
+        'times-new-roman': ['Times New Roman', 'serif'],
       },
       keyframes: {
         twinkle: {

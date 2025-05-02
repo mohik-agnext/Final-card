@@ -87,6 +87,8 @@ export default function AnniversaryCard(): JSX.Element {
     }
   }, [data.name, data.designation]);
 
+
+
   const handleDownload = async () => {
     try {
       await downloadAsImage("anniversary-card", `anniversary-${data.name}`);
@@ -155,20 +157,19 @@ export default function AnniversaryCard(): JSX.Element {
               </label>
             </div>
           </div>
-
-
         </div>
       </div>
 
       {/* Card Preview Section */}
-      <div className={`relative ${preview ? 'block' : 'hidden'}`}>
-        <div 
+      <div className="relative w-full min-h-screen flex items-center justify-center p-8">
+        <div
           className="relative overflow-hidden rounded-lg shadow-xl mx-auto" 
           id="anniversary-card"
           style={{ 
             width: '1000px',
             height: '550px',
-            maxWidth: '100%'
+            maxWidth: '90vw',
+            maxHeight: '90vh'
           }}
         >
           <div className="w-full h-full overflow-hidden">
@@ -188,7 +189,7 @@ export default function AnniversaryCard(): JSX.Element {
             className="absolute text-center z-8"
             style={{
               top: '28%',
-              left: '15%',
+              left: '13%',
               transform: 'translateY(-50%)'
             }}
           >
@@ -205,18 +206,25 @@ export default function AnniversaryCard(): JSX.Element {
           </div>
 
           {/* Name and Designation */}
-          <div className="absolute top-[49%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-8 w-[80%]">
+          <div className="absolute top-[49%] left-[50%] transform -translate-x-1/2 -translate-y-1/2 text-center text-white z-8 w-[80%] max-w-[800px]">
             <p
               ref={nameRef}
-              className="font-semibold mb-0 whitespace-nowrap overflow-visible"
-              style={{ fontSize: `${nameFontSize}px` }}
+              className="whitespace-nowrap overflow-visible font-times-new-roman"
+              style={{ 
+                fontSize: `${nameFontSize}px`,
+                fontWeight: 600,
+                letterSpacing: '0.02em'
+              }}
             >
               {data.name || "Enter Name"}
             </p>
             <p
               ref={designationRef}
-              className="text-white/90 whitespace-nowrap overflow-visible"
-              style={{ fontSize: `${designationFontSize}px` }}
+              className="whitespace-nowrap overflow-visible text-white/90 font-times-new-roman"
+              style={{ 
+                fontSize: `${designationFontSize}px`,
+                letterSpacing: '0.01em'
+              }}
             >
               {data.designation || "Enter Designation"}
             </p>
